@@ -277,10 +277,13 @@ class Lab02Test {
       fail("Could not find equals method in Category entity");
     }
 
-    List<?> categories = controller.getLab01Data().getCategories();
-    Object category1 = categories.get(0);
-    Object category2 = categories.get(1);
-    assertEqualsImplementation(category1, category2);
+    // *** TODO (Martin Abel, 2023-12-22): Adjustment to JPA standards     ***
+    // *** In Lab01, the categories are not yet persisted, so all category ***
+    // *** IDs are not assigned (id = 0) and are therefore all identical.  ***
+    //    List<?> categories = controller.getLab01Data().getCategories();
+    //    Object category1 = categories.get(0);
+    //    Object category2 = categories.get(1);
+    //    assertEqualsImplementation(category1, category2);
 
     if (answerEntity != null) {
       if (!hasEqualsMethod(answerEntity.getJavaType())) {
