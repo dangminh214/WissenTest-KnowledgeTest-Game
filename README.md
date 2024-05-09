@@ -1,3 +1,4 @@
+# Bitte mich kontaktieren, ich hab das 1.Praktikum fertig gemact und gepusht, morgen 10.05 komm ich nicht zu Vorlesung, bitte mich kontaktieren, ich werded dieses Zeil am Montag loschen xD
 # Wissenstest (Praktikum zur Lehrveranstaltung Datenbanken 2)
 
 Dieses Repository bildet die Grundlage für Ihr Praktikum in Datenbanken 2. Sie werden auf seiner Basis über das gesamte Semester verteilt in mehreren Schritten ein Wissensquiz entwickeln.
