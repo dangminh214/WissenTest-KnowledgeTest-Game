@@ -79,6 +79,7 @@ public class Lab01DataImpl extends Lab01Data {
     answerB.setQuestion(toAddQuestion);
     answerC.setQuestion(toAddQuestion);
     answerD.setQuestion(toAddQuestion);
+    System.out.println(toAddQuestion);
     return toAddQuestion;
   }
 }
