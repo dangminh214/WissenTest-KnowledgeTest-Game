@@ -20,12 +20,12 @@ public class Lab01DataImpl extends Lab01Data {
   }
 
   @Override
-  public List<?> getQuestions() {
+  public List<Question> getQuestions() {
     return questions;
   }
 
   @Override
-  public List<?> getCategories() {
+  public List<Category> getCategories() {
     return categories;
   }
 
