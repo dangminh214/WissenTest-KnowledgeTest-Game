@@ -25,7 +25,7 @@ public class Lab02EntityManagerImpl extends Lab02EntityManager {
 
   @Override
   public void persistData() {
-    List<Category> categoryList = null;
+    List<Category> categoryList;
 
     try {
       categoryList = lab01.getCategories();
@@ -41,7 +41,6 @@ public class Lab02EntityManagerImpl extends Lab02EntityManager {
     em.getTransaction().commit();
     em.close();
   }
-
 
   @Override
   public EntityManager getEntityManager() {
