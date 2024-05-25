@@ -21,7 +21,7 @@ public class Lab01DataImpl extends Lab01Data {
   @Override
   public List<Question> getQuestions() throws URISyntaxException, IOException {
     List<String[]> line = CsvDataReader.read();
-    List<Question> question = new ArrayList<Question>();
+    List<Question> question = new ArrayList<>();
     for (int i = 1; i < line.size(); i++) {
       String[] values = line.get(i);
       Question newQuestion = new Question(values, new Category(values[7]));
@@ -34,7 +34,7 @@ public class Lab01DataImpl extends Lab01Data {
   @Override
   public List<Category> getCategories() throws URISyntaxException, IOException {
     List<String[]> line = CsvDataReader.read();
-    List<Category> categories = new ArrayList<Category>();
+    List<Category> categories = new ArrayList<>();
     List<String> listString = new ArrayList<>();
     for (int i = 1; i < line.size(); i++) {
       listString.add(line.get(i)[7]);
