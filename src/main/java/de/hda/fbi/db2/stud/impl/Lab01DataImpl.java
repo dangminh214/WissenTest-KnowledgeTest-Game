@@ -49,7 +49,7 @@ public class Lab01DataImpl extends Lab01Data {
       });
       categories.add(category);
     });
-    var sizeCategories = csvCategories.size();
+    var sizeCategories = categories.size();
     var sizeQuestions = questions.size();
     System.out.println("Anzahl Kategorien: " + sizeCategories);
     System.out.println("Anzahl Fragen: " + sizeQuestions);
@@ -79,7 +79,8 @@ public class Lab01DataImpl extends Lab01Data {
     answerB.setQuestion(toAddQuestion);
     answerC.setQuestion(toAddQuestion);
     answerD.setQuestion(toAddQuestion);
-    System.out.println(toAddQuestion);
+    List<Answer> answersThisNewQuestion = List.of(answerA, answerB, answerC, answerD);
+    toAddQuestion.setChoices(answersThisNewQuestion);
     return toAddQuestion;
   }
 }

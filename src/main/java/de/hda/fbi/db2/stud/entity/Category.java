@@ -72,11 +72,11 @@ public class Category {
   }
 
   private String printEveryQuestion() {
-    String allQuestions = "";
+    StringBuilder allQuestions = new StringBuilder();
     for (Question question : this.questions) {
-      allQuestions += question.toString();
+      allQuestions.append(question.toString());
     }
-    return allQuestions;
+    return allQuestions.toString();
   }
 
   public String toString() {

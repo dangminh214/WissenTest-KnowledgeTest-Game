@@ -1,5 +1,6 @@
 package de.hda.fbi.db2.stud.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;

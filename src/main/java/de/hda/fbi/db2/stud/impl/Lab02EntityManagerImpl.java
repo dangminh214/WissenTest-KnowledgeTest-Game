@@ -1,17 +1,15 @@
 package de.hda.fbi.db2.stud.impl;
 
+import de.hda.fbi.db2.api.Lab02EntityManager;
 import de.hda.fbi.db2.stud.entity.Category;
-import java.net.URISyntaxException;
 import java.util.List;
-import java.io.IOException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import de.hda.fbi.db2.api.Lab02EntityManager;
 
 public class Lab02EntityManagerImpl extends Lab02EntityManager {
   private EntityManager em;
-  private Lab01DataImpl lab01 = new Lab01DataImpl();
+  private final Lab01DataImpl lab01 = new Lab01DataImpl();
 
   @Override
   public void init() {
@@ -25,24 +23,22 @@ public class Lab02EntityManagerImpl extends Lab02EntityManager {
 
   @Override
   public void persistData() {
-    List<Category> cateList = lab01.getCategories();
+    List<Category> categoryList = lab01.getCategories();
+    System.out.println("Categories in Lab02: " + categoryList);
 
-    if (cateList != null && !cateList.isEmpty()) {
+    if (categoryList != null && !categoryList.isEmpty()) {
       em.getTransaction().begin();
-      for (Category category : cateList) {
+      for (Category category : categoryList) {
         em.persist(category);
       }
       em.getTransaction().commit();
+      em.close();
     }
-
-    em.close();
   }
 
   @Override
   public EntityManager getEntityManager() {
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("fbi-postgresPU");
-    EntityManager em = emf.createEntityManager();
-    return em;
+    return emf.createEntityManager();
   }
-
 }
