@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -14,6 +15,7 @@ import javax.persistence.Table;
 @Table(name = "category")
 public class Category {
   @Id
+  @Column(unique = true, nullable = false)
     private String name;
   @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST)
     private List<Question> questions;
@@ -31,7 +33,7 @@ public class Category {
   * */
   public Category(String name) {
     this.name = name;
-    this.questions = new ArrayList<>();
+    this.questions = new ArrayList<Question>();
   }
 
   /**
