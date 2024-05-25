@@ -1,62 +1,41 @@
 package de.hda.fbi.db2.stud.entity;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.Embeddable;
 
-/**
- * Represents an answer to a question.
- */
-@Entity
-@Table(name = "answer")
+@Embeddable
 public class Answer {
-  @Id
-  private String text;
 
-  @ManyToOne
-  @JoinColumn(name = "question")
-  private Question question;
+  private String answer;
 
-  /**
-   * Default constructor initializes text to "NOT_YET_SET" and initializes question for this answer.
-   * */
+  public String getAnswer() {
+    return answer;
+  }
+
+  public void setAnswer(String answer) {
+    this.answer = answer;
+  }
+
+  public boolean isRight() {
+    return isRight;
+  }
+
+  public void setRight(boolean right) {
+    isRight = right;
+  }
+
+  boolean isRight;
+
+  public Answer(String answer) {
+    isRight = false;
+    this.answer = answer;
+  }
+
+  public Answer(String answer, boolean checkAnswer) {
+    this.answer = answer;
+    this.isRight = checkAnswer;
+  }
+
   public Answer() {
-    this.text = "NOT_YET_SET";
-    this.question = new Question();
-  }
 
-  /**
-   * Constructs an Answer with the specified id, text, and question.
-   *
-   * @param text the text of the answer.
-   * @param question the question to which this answer belongs.
-   */
-  public Answer(String text, Question question) {
-    this.text = text;
-    this.question = question;
-  }
-
-  public String getText() {
-    return text;
-  }
-
-  public void setText(String text) {
-    this.text = text;
-  }
-
-  public Question getQuestion() {
-    return question;
-  }
-
-  public void setQuestion(Question question) {
-    this.question = question;
-  }
-
-  @Override
-  public String toString() {
-    return text;
   }
 }

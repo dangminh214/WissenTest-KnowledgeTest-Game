@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import de.hda.fbi.db2.api.Lab01Data;
 import de.hda.fbi.db2.controller.Controller;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -44,21 +46,24 @@ class Lab01Test {
   }
 
   @Test
-  void test1CategorySize() {
+  void test1CategorySize() throws URISyntaxException, IOException {
     List<?> categories = controller.getLab01Data().getCategories();
     assertNotNull(categories, "Categories must not be null");
     assertEquals(51, categories.size(), "There should be 51 categories");
   }
 
   @Test
-  void test2QuestionSize() {
+  void test2QuestionSize() throws URISyntaxException, IOException {
+
     List<?> questions = controller.getLab01Data().getQuestions();
     assertNotNull(questions, "Questions must not be null");
     assertEquals(200, questions.size(), "There should be 200 questions");
+
+
   }
 
   @Test
-  void test3CategoryObject() {
+  void test3CategoryObject() throws URISyntaxException, IOException {
     List<?> categories = controller.getLab01Data().getCategories();
     assertNotNull(categories, "Categories must not be null");
     assertFalse(categories.isEmpty(), "Categories must not be empty");
@@ -71,7 +76,8 @@ class Lab01Test {
   }
 
   @Test
-  void test4QuestionObject() {
+  void test4QuestionObject() throws URISyntaxException, IOException {
+
     List<?> questions = controller.getLab01Data().getQuestions();
     assertNotNull(questions, "Questions must not be null");
     assertFalse(questions.isEmpty(), "Questions must not be empty");
@@ -81,5 +87,6 @@ class Lab01Test {
         "Question class should be named 'Question'");
     assertEquals("de.hda.fbi.db2.stud.entity", testObject.getClass().getPackageName(),
         "Question class should be in correct package");
+
   }
 }

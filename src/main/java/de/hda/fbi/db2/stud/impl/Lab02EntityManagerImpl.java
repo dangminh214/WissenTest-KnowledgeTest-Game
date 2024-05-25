@@ -2,6 +2,8 @@ package de.hda.fbi.db2.stud.impl;
 
 import de.hda.fbi.db2.api.Lab02EntityManager;
 import de.hda.fbi.db2.stud.entity.Category;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -23,18 +25,23 @@ public class Lab02EntityManagerImpl extends Lab02EntityManager {
 
   @Override
   public void persistData() {
-    List<Category> categoryList = lab01.getCategories();
-    System.out.println("Categories in Lab02: " + categoryList);
+    List<Category> categoryList = null;
 
-    if (categoryList != null && !categoryList.isEmpty()) {
-      em.getTransaction().begin();
-      for (Category category : categoryList) {
-        em.persist(category);
-      }
-      em.getTransaction().commit();
-      em.close();
+    try {
+      categoryList = lab01.getCategories();
+    } catch (URISyntaxException | IOException e) {
+      throw new RuntimeException(e);
     }
+
+    em.getTransaction().begin();
+
+    for (Category category : categoryList) {
+      em.persist(category);
+    }
+    em.getTransaction().commit();
+    em.close();
   }
+
 
   @Override
   public EntityManager getEntityManager() {

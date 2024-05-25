@@ -10,6 +10,8 @@ import de.hda.fbi.db2.api.Lab01Data;
 import de.hda.fbi.db2.api.Lab03Game;
 import de.hda.fbi.db2.controller.Controller;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -46,7 +48,7 @@ class Lab03Test {
    * Lab03Test init.
    */
   @BeforeAll
-  static void init() {
+  static void init() throws URISyntaxException, IOException {
     controller = Controller.getInstance();
     Lab03Game impl = controller.getLab03Game();
     // Skip test if students have not implemented class yet
@@ -83,7 +85,7 @@ class Lab03Test {
   }
 
   @Test
-  void test1Functionality() {
+  void test1Functionality() throws URISyntaxException, IOException {
     if (metaData == null) {
       fail("No MetaModel");
     }
@@ -109,7 +111,7 @@ class Lab03Test {
 
   @SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
   @Test
-  void test2FindGameEntity() {
+  void test2FindGameEntity() throws URISyntaxException, IOException {
     if (metaData == null) {
       fail("No MetaModel");
     }

@@ -1,86 +1,62 @@
 package de.hda.fbi.db2.stud.impl;
 
 import de.hda.fbi.db2.api.Lab01Data;
-import de.hda.fbi.db2.stud.entity.Answer;
+import de.hda.fbi.db2.controller.CsvDataReader;
 import de.hda.fbi.db2.stud.entity.Category;
 import de.hda.fbi.db2.stud.entity.Question;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Lab01DataImpl extends Lab01Data {
 
-  List<Question> questions;
-  List<Category> categories;
+  List<Question> allQuestion = new ArrayList<>();
 
-  public void init() {
-    questions = new ArrayList<>();
-    categories = new ArrayList<>();
+  public Lab01DataImpl() {
+
   }
 
   @Override
-  public List<Question> getQuestions() {
-    return questions;
+  public List<Question> getQuestions() throws URISyntaxException, IOException {
+    List<String[]> line = CsvDataReader.read();
+    List<Question> question = new ArrayList<Question>();
+    for (int i = 1; i < line.size(); i++) {
+      String[] values = line.get(i);
+      Question newQuestion = new Question(values, new Category(values[7]));
+      question.add(newQuestion);
+    }
+    System.out.println("Number of Question: " + question.size());
+    return question;
   }
 
   @Override
-  public List<Category> getCategories() {
+  public List<Category> getCategories() throws URISyntaxException, IOException {
+    List<String[]> line = CsvDataReader.read();
+    List<Category> categories = new ArrayList<Category>();
+    List<String> listString = new ArrayList<>();
+    for (int i = 1; i < line.size(); i++) {
+      listString.add(line.get(i)[7]);
+    }
+    //remove Duplicate
+    List<String> newList = listString.stream()
+        .distinct()
+        .collect(Collectors.toList());
+    for (String s : newList) {
+      Category cgr = new Category(s);
+      categories.add(cgr);
+    }
+    System.out.println("Number of Categories " + categories.size());
     return categories;
   }
 
   @Override
-  public void loadCsvFile(List<String[]> csvLines) {
-    csvLines.remove(0);
-    Map<String, List<Question>> csvCategories = new HashMap<>(10);
-    csvLines.forEach(line -> {
-      ArrayList<Answer> answers = new ArrayList<Answer>();
-      Question toAdd = getQuestion(line, answers);
-      var cat = csvCategories.getOrDefault(line[7], new ArrayList<Question>());
-      cat.add(toAdd);
-      csvCategories.put(line[7], cat);
-    });
-
-    csvCategories.forEach((catTitle, catQuestions) -> {
-      Category category = new Category(catTitle);
-      catQuestions.forEach(q -> {
-        category.addQuestion(q);
-        questions.add(q);
-      });
-      categories.add(category);
-    });
-    var sizeCategories = categories.size();
-    var sizeQuestions = questions.size();
-    System.out.println("Anzahl Kategorien: " + sizeCategories);
-    System.out.println("Anzahl Fragen: " + sizeQuestions);
-  }
-
-  private static Question getQuestion(String[] line, ArrayList<Answer> answers) {
-    //AnswerA line[2]: AnswerB line[3]: AnswerC line[3]: AnswerD line[4]
-    Answer answerA = new Answer(line[2], null);
-    Answer answerB = new Answer(line[3], null);
-    Answer answerC = new Answer(line[4], null);
-    Answer answerD = new Answer(line[5], null);
-    answers.add(answerA);
-    answers.add(answerB);
-    answers.add(answerC);
-    answers.add(answerD);
-    var newID = Integer.parseInt(line[0]);
-    String newTitle = line[1];
-    Category newCategory = new Category(line[7]);
-    var indexCorrectAnswer = Integer.parseInt(line[6]);
-    Question toAddQuestion = new Question(
-        newID,
-        newTitle,
-        answers,
-        indexCorrectAnswer,
-        newCategory);
-    answerA.setQuestion(toAddQuestion);
-    answerB.setQuestion(toAddQuestion);
-    answerC.setQuestion(toAddQuestion);
-    answerD.setQuestion(toAddQuestion);
-    List<Answer> answersThisNewQuestion = List.of(answerA, answerB, answerC, answerD);
-    toAddQuestion.setChoices(answersThisNewQuestion);
-    return toAddQuestion;
+  public void loadCsvFile(List<String[]> csvLines) throws URISyntaxException, IOException {
+    for (int i = 1; i < csvLines.size(); i++) {
+      String[] values = csvLines.get(i);
+      Question u = new Question(values, new Category(values[7]));
+      allQuestion.add(u);
+    }
   }
 }

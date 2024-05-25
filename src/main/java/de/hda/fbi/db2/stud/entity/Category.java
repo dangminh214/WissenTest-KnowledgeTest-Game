@@ -1,112 +1,93 @@
 package de.hda.fbi.db2.stud.entity;
 
+import de.hda.fbi.db2.controller.CsvDataReader;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 
 @Entity
-@Table(name = "category")
+
 public class Category {
-  @Id
-  @Column(unique = true, nullable = false)
-    private String name;
-  @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST)
-    private List<Question> questions;
-
-  /**
-   * Default constructor initializes name to "NOT_YET_SET" and initializes questions list.
-  * */
-  public Category() {
-    this.name = "NOT_YET_SET";
-    this.questions = new ArrayList<>();
-  }
-
-  /**
-   * Default constructor initializes name to "NOT_YET_SET" and initializes questions list.
-  * */
-  public Category(String name) {
-    this.name = name;
-    this.questions = new ArrayList<Question>();
-  }
-
-  /**
-   * Gets the name of the category.
-   *
-   * @return the name of the category
-   */
-  public String getName() {
-    return this.name;
-  }
-
-  /**
-   * Adds a question to the category.
-   *
-   * @param question the question to add
-   */
-  public void addQuestion(Question question) {
-    question.setCategory(this);
-    this.questions.add(question);
-  }
-
-  /**
-   * Gets a random question from the category.
-   *
-   * @return a random question
-   */
-  public Question getRandomQuestion() {
-    final int min = 0;
-    final int max = this.questions.size();
-    int randomIndex = ThreadLocalRandom.current().nextInt(min, max);
-    return this.questions.get(randomIndex);
-  }
-
-  public List<Question> getQuestions() {
-    return this.questions;
-  }
-
-  private String printEveryQuestion() {
-    StringBuilder allQuestions = new StringBuilder();
-    for (Question question : this.questions) {
-      allQuestions.append(question.toString());
-    }
-    return allQuestions.toString();
-  }
-
-  public String toString() {
-    return this.name + " [" + this.questions.size() + "]" + "\n" + printEveryQuestion();
-  }
 
   @Override
-    public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
-    return result;
-  }
-
-  @Override
-    public boolean equals(Object obj) {
-    if (this == obj) {
+  public boolean equals(Object o) {
+    if (this == o) {
       return true;
     }
-    if (obj == null) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
-      return false;
+    Category category1 = (Category) o;
+    return id == category1.id && Objects.equals(name, category1.name)
+        && Objects.equals(questions, category1.questions);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String question) {
+    this.name = question;
+  }
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private int id;
+  @Column(unique = true)
+  private String name;
+
+  public Category() {
+
+  }
+
+  public ArrayList<Question> getQuestions() {
+    return questions;
+  }
+
+  public void setQuestions(ArrayList<Question> questions) {
+    this.questions = questions;
+  }
+
+  @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST)
+  private ArrayList<Question> questions = new ArrayList<>();
+
+  /**
+   * Constructor of class Category.
+   *
+   * @param q type of the category
+   * @throws URISyntaxException syntax exception
+   * @throws IOException        read data exception
+   */
+  public Category(String q) throws URISyntaxException, IOException {
+    this.name = q;
+    List<String[]> line = CsvDataReader.read();
+    for (int i = 1; i < line.size(); i++) {
+      if (q.equals(line.get(i)[7])) {
+        Question ques = new Question(line.get(i), this);
+        questions.add(ques);
+      }
     }
-    Category other = (Category) obj;
-    if (name == null) {
-      return other.name == null;
-    } else {
-      return name.equals(other.name);
-    }
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
   }
 }

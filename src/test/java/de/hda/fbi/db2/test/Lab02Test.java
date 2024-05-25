@@ -12,6 +12,8 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import de.hda.fbi.db2.api.Lab02EntityManager;
 import de.hda.fbi.db2.controller.Controller;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.metamodel.Attribute;
@@ -62,7 +64,7 @@ class Lab02Test {
    * Lab02Test init.
    */
   @BeforeAll
-  static void init() {
+  static void init() throws URISyntaxException, IOException {
     controller = Controller.getInstance();
     Lab02EntityManager impl = controller.getLab02EntityManager();
     // Skip test if students have not implemented class yet
@@ -114,7 +116,7 @@ class Lab02Test {
 
   @SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
   @Test
-  void test2FindCategory() {
+  void test2FindCategory() throws URISyntaxException, IOException {
     if (metaData == null) {
       fail("No MetaModel");
     }
@@ -138,7 +140,7 @@ class Lab02Test {
 
   @SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
   @Test
-  void test3FindQuestion() {
+  void test3FindQuestion() throws URISyntaxException, IOException {
     if (metaData == null) {
       fail("No MetaModel");
     }
@@ -255,7 +257,7 @@ class Lab02Test {
   }
 
   @Test
-  void test7EqualsMethod() {
+  void test7EqualsMethod() throws URISyntaxException, IOException {
     if (metaData == null) {
       fail("No MetaModel");
     }
@@ -277,13 +279,10 @@ class Lab02Test {
       fail("Could not find equals method in Category entity");
     }
 
-    // *** TODO (Martin Abel, 2023-12-22): Adjustment to JPA standards     ***
-    // *** In Lab01, the categories are not yet persisted, so all category ***
-    // *** IDs are not assigned (id = 0) and are therefore all identical.  ***
-    //    List<?> categories = controller.getLab01Data().getCategories();
-    //    Object category1 = categories.get(0);
-    //    Object category2 = categories.get(1);
-    //    assertEqualsImplementation(category1, category2);
+    List<?> categories = controller.getLab01Data().getCategories();
+    Object category1 = categories.get(0);
+    Object category2 = categories.get(1);
+    assertEqualsImplementation(category1, category2);
 
     if (answerEntity != null) {
       if (!hasEqualsMethod(answerEntity.getJavaType())) {
@@ -326,7 +325,7 @@ class Lab02Test {
   }
 
   @Test
-  void test8HashCodeMethod() {
+  void test8HashCodeMethod() throws URISyntaxException, IOException {
     if (metaData == null) {
       fail("No MetaModel");
     }
