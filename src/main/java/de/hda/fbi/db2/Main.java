@@ -22,6 +22,7 @@ public class Main {
 
     //TODO(stud): uncomment for lab02
     controller.persistData();
+    //test uppload fix pipeline
 
     //TODO(stud): uncomment for lab03, lab04 and lab05
     //controller.startMenu();
