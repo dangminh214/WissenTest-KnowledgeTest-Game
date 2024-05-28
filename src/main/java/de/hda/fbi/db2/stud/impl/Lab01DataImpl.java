@@ -18,6 +18,10 @@ public class Lab01DataImpl extends Lab01Data {
 
   }
 
+  public void init() {
+    allQuestion = new ArrayList<>();
+  }
+
   @Override
   public List<Question> getQuestions() throws URISyntaxException, IOException {
     List<String[]> line = CsvDataReader.read();
