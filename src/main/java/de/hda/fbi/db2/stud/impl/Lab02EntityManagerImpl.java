@@ -1,50 +1,49 @@
 package de.hda.fbi.db2.stud.impl;
 
 import de.hda.fbi.db2.api.Lab02EntityManager;
-import de.hda.fbi.db2.stud.entity.Category;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
+import java.util.Iterator;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+
 public class Lab02EntityManagerImpl extends Lab02EntityManager {
-  private EntityManager em;
-  private final Lab01DataImpl lab01 = new Lab01DataImpl();
+  EntityManagerFactory entityManagerFactory;
 
   @Override
   public void init() {
-    em = getEntityManager();
+    // this.entityManagerFactory =
+    // Persistence.createEntityManagerFactory("fbi-postgresPU");
+    this.entityManagerFactory = Persistence.createEntityManagerFactory("fbi-postgresPU");
   }
 
   @Override
   public void destroy() {
-    em.close();
+    this.entityManagerFactory.close();
   }
 
   @Override
-  public void persistData() {
-    List<Category> categoryList;
+  public void persistData() throws URISyntaxException, IOException {
+    var categories = this.lab01Data.getCategories();
+    var mgr = this.getEntityManager();
 
-    try {
-      categoryList = lab01.getCategories();
-    } catch (URISyntaxException | IOException e) {
-      throw new RuntimeException(e);
+    // Fragen werden nicht explizit hinzugefügt, da sie bereits mit den Kategorien
+    // erstellt wurden.
+    mgr.getTransaction().begin();
+    for (Iterator<?> i = categories.iterator(); i.hasNext();) {
+      var c = i.next();
+      mgr.persist(c);
     }
-
-    em.getTransaction().begin();
-
-    for (Category category : categoryList) {
-      em.persist(category);
-    }
-    em.getTransaction().commit();
-    em.close();
+    mgr.flush();
+    mgr.clear();
+    mgr.getTransaction().commit();
   }
 
   @Override
   public EntityManager getEntityManager() {
-    EntityManagerFactory emf = Persistence.createEntityManagerFactory("fbi-postgresPU");
-    return emf.createEntityManager();
+    return this.entityManagerFactory.createEntityManager();
   }
+
 }

@@ -1,6 +1,8 @@
 package de.hda.fbi.db2;
 
 import de.hda.fbi.db2.controller.Controller;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * Main Class.
@@ -14,7 +16,7 @@ public class Main {
    *
    * @param args Command-Line Arguments.
    */
-  public static void main(String[] args) {
+  public static void main(String[] args) throws URISyntaxException, IOException {
     Controller controller = Controller.getInstance();
 
     //TODO(stud): uncomment for lab01

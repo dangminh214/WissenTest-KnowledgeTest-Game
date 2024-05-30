@@ -244,7 +244,7 @@ public class Controller {
   /**
    * Persists data.
    */
-  public void persistData() {
+  public void persistData() throws URISyntaxException, IOException {
     if (isMissingLabImplementation(2)) {
       return;
     }

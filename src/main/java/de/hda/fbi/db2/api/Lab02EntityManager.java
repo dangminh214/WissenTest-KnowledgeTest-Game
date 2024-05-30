@@ -1,5 +1,7 @@
 package de.hda.fbi.db2.api;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -37,7 +39,7 @@ public abstract class Lab02EntityManager {
   /**
    * Here you have to persist the data in the database.
    */
-  public abstract void persistData();
+  public abstract void persistData() throws URISyntaxException, IOException;
 
   /**
    * Creates a new {@code EntityManager}.
