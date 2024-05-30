@@ -1,66 +1,121 @@
 package de.hda.fbi.db2.stud.impl;
 
 import de.hda.fbi.db2.api.Lab01Data;
-import de.hda.fbi.db2.controller.CsvDataReader;
+import de.hda.fbi.db2.stud.entity.Answer;
 import de.hda.fbi.db2.stud.entity.Category;
 import de.hda.fbi.db2.stud.entity.Question;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 public class Lab01DataImpl extends Lab01Data {
+  List<Question> questionList;
+  List<Category> categoryList;
+  HashMap<String, Category> categoryCheck;
 
-  List<Question> allQuestion = new ArrayList<>();
+  int categoryCounter;
 
   public Lab01DataImpl() {
-
   }
 
+  @Override
   public void init() {
-    allQuestion = new ArrayList<>();
+    questionList = new ArrayList<>();
+    categoryList = new ArrayList<>();
+    categoryCheck = new HashMap<>();
+    categoryCounter = 0;
   }
 
   @Override
-  public List<Question> getQuestions() throws URISyntaxException, IOException {
-    List<String[]> line = CsvDataReader.read();
-    List<Question> question = new ArrayList<>();
-    for (int i = 1; i < line.size(); i++) {
-      String[] values = line.get(i);
-      Question newQuestion = new Question(values, new Category(values[7]));
-      question.add(newQuestion);
-    }
-    System.out.println("Number of Question: " + question.size());
-    return question;
+  public List<?> getQuestions() {
+    return questionList;
   }
 
   @Override
-  public List<Category> getCategories() throws URISyntaxException, IOException {
-    List<String[]> line = CsvDataReader.read();
-    List<Category> categories = new ArrayList<>();
-    List<String> listString = new ArrayList<>();
-    for (int i = 1; i < line.size(); i++) {
-      listString.add(line.get(i)[7]);
+  public List<?> getCategories() {
+    return categoryList;
+  }
+
+
+  /**
+   * Add a new category to the category list.
+   *
+   * @param categoryName name of category
+   */
+  private void addCategory(String categoryName) {
+    if (categoryList.isEmpty()) {
+      Category newCategory = new Category(categoryName, categoryCounter);
+      categoryCounter++;
+      categoryList.add(newCategory);
+      categoryCheck.put(categoryName,newCategory);
+      System.out.println("added a new Category " + categoryName);
+    } else {
+      if (findCategory(categoryName) == null) {
+        Category newCategory = new Category(categoryName, categoryCounter);
+        categoryCounter++;
+        categoryList.add(newCategory);
+        categoryCheck.put(categoryName,newCategory);
+        System.out.println("added a new Category " + categoryName);
+      }
     }
-    //remove Duplicate
-    List<String> newList = listString.stream()
-        .distinct()
-        .collect(Collectors.toList());
-    for (String s : newList) {
-      Category cgr = new Category(s);
-      categories.add(cgr);
-    }
-    System.out.println("Number of Categories " + categories.size());
-    return categories;
+  }
+
+  /**
+   * Find if a category is already exists in the category list.
+   *
+   * @param categoryName category name
+   * @return category if found, null if not found
+   */
+  private Category findCategory(String categoryName) {
+    return categoryCheck.getOrDefault(categoryName, null);
   }
 
   @Override
-  public void loadCsvFile(List<String[]> csvLines) throws URISyntaxException, IOException {
-    for (int i = 1; i < csvLines.size(); i++) {
-      String[] values = csvLines.get(i);
-      Question u = new Question(values, new Category(values[7]));
-      allQuestion.add(u);
+  public void loadCsvFile(List<String[]> csvLines) {
+    for (String[] line : csvLines) {
+      if (line[1].equals("_frage")) {
+        continue;
+      }
+      try {
+        int id = Integer.parseInt(line[0]);
+        //find and add category if not exists in the list
+        addCategory(line[7]);
+        Question f = new Question(id,
+            line[1],
+            line[2],
+            line[3],
+            line[4],
+            line[5],
+            line[6],
+            findCategory(line[7]));
+        questionList.add(f);
+      } catch (NumberFormatException e) {
+        System.out.println("error");
+        // Skip the line if line[0] is not parseable to an integer
+      }
     }
+    printData();
+  }
+
+  @Override
+  public void printData() {
+    System.out.println("\n\nPrinting Question\n\n");
+    for (Question q : questionList) {
+      int loesung = -1;
+      System.out.println("Question ID: " + q.getQId());
+      System.out.println("Question: " + q.getQuestionText());
+      for (Answer a : q.getAnswerList()) {
+        System.out.println("Answer ID: " + a.getAId());
+        System.out.println("Answer: " + a.getAnswerText());
+        if (a.isCorrect()) {
+          loesung = a.getAId();
+        }
+      }
+      System.out.println("Loesung: " + loesung);
+      System.out.println("Category: " + q.getCategory().getName());
+    }
+    System.out.println("Menge der Fragen: " + questionList.size());
+    System.out.println("Menge der Kategorien: " + categoryList.size());
   }
 }

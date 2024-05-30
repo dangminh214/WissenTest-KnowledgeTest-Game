@@ -1,22 +1,45 @@
 package de.hda.fbi.db2.stud.entity;
 
-import de.hda.fbi.db2.controller.CsvDataReader;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
-@Entity
 
+@Entity
+@NamedQueries({
+    @NamedQuery(name = "Category.findAll",
+        query = "select c from Category c")
+})
 public class Category {
+
+  @Id
+  int categoryId;
+
+  @Column(unique = true)
+  private String name;
+
+  @OneToMany(mappedBy = "category")
+  private List<Question> questionList;
+
+
+  public Category() {
+  }
+
+  /**
+   * constructor for Category.
+   *
+   */
+  public Category(String name, int categoryId) {
+    this.name = name;
+    this.categoryId = categoryId;
+    questionList = new ArrayList<>();
+  }
 
   @Override
   public boolean equals(Object o) {
@@ -26,68 +49,38 @@ public class Category {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Category category1 = (Category) o;
-    return id == category1.id && Objects.equals(name, category1.name)
-        && Objects.equals(questions, category1.questions);
+    Category category = (Category) o;
+    return categoryId == category.categoryId;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id);
+    return Objects.hash(categoryId);
+  }
+
+  //getter + setter
+  public List<Question> getQuestionList() {
+    return questionList;
+  }
+
+  public void setQuestionList(List<Question> questionList) {
+    this.questionList = questionList;
   }
 
   public String getName() {
     return name;
   }
 
-  public void setName(String question) {
-    this.name = question;
+  public int getCategoryId() {
+    return categoryId;
   }
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private int id;
-  @Column(unique = true)
-  private String name;
-
-  public Category() {
-
+  public void setName(String categoryName) {
+    this.name = categoryName;
   }
 
-  public ArrayList<Question> getQuestions() {
-    return questions;
+  public void addQuestion(Question question) {
+    questionList.add(question);
   }
 
-  public void setQuestions(ArrayList<Question> questions) {
-    this.questions = questions;
-  }
-
-  @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST)
-  private ArrayList<Question> questions = new ArrayList<>();
-
-  /**
-   * Constructor of class Category.
-   *
-   * @param q type of the category
-   * @throws URISyntaxException syntax exception
-   * @throws IOException        read data exception
-   */
-  public Category(String q) throws URISyntaxException, IOException {
-    this.name = q;
-    List<String[]> line = CsvDataReader.read();
-    for (int i = 1; i < line.size(); i++) {
-      if (q.equals(line.get(i)[7])) {
-        Question ques = new Question(line.get(i), this);
-        questions.add(ques);
-      }
-    }
-  }
-
-  public int getId() {
-    return id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
-  }
 }

@@ -2,40 +2,54 @@ package de.hda.fbi.db2.stud.entity;
 
 import javax.persistence.Embeddable;
 
+
 @Embeddable
 public class Answer {
 
-  private String answer;
+  private int answerId;
 
-  public String getAnswer() {
-    return answer;
-  }
+  private boolean isCorrect;
 
-  public void setAnswer(String answer) {
-    this.answer = answer;
-  }
-
-  public boolean isRight() {
-    return isRight;
-  }
-
-  public void setRight(boolean right) {
-    isRight = right;
-  }
-
-  boolean isRight;
-
-  public Answer(String answer) {
-    isRight = false;
-    this.answer = answer;
-  }
-
-  public Answer(String answer, boolean checkAnswer) {
-    this.answer = answer;
-    this.isRight = checkAnswer;
-  }
+  private String answerText;
 
   public Answer() {
-
   }
+
+  /**
+   * constructor for answer.
+   *
+   * @param answerId        id of the answer
+   * @param answerText answer
+   */
+  public Answer(int answerId, String answerText) {
+    this.answerId = answerId;
+    this.answerText = answerText;
+  }
+
+  public int getAId() {
+    return answerId;
+  }
+
+  public void setAId(int id) {
+    this.answerId = id;
+  }
+
+
+  public boolean isCorrect() {
+    return isCorrect;
+  }
+
+  public void setCorrect(boolean correct) {
+    isCorrect = correct;
+  }
+
+  public String getAnswerText() {
+    return answerText;
+  }
+
+  public void setAnswerText(String answer) {
+    this.answerText = answer;
+  }
+
+
 }

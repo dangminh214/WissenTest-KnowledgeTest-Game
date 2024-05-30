@@ -1,28 +1,76 @@
 package de.hda.fbi.db2.stud.entity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+
 
 @Entity
-@Table(name = "question")
 public class Question {
 
-  private String question;
+  @Id
+  private long questionId;
+
+
+  private String questionText;
+
 
   @ElementCollection
-  private ArrayList<Answer> answers = new ArrayList<>();
-  @ManyToOne(cascade = CascadeType.PERSIST)
-  @JoinColumn(name = "categoryID")
+  private List<Answer> answerList = new ArrayList<>();
+
+
+  @ManyToOne
   private Category category;
-  @Id
-  private int questionID;
+
+  public Question() {}
+
+  /**
+   * constructor for question.
+   *
+   * @param questionId id
+   * @param questionText question
+   * @param answer1 answer 1
+   * @param answer2 answer 2
+   * @param answer3 answer 3
+   * @param answer4 answer 4
+   * @param correctAnswer solution
+   * @param category category
+   */
+  public Question(int questionId,
+      String questionText,
+      String answer1,
+      String answer2,
+      String answer3,
+      String answer4,
+      String correctAnswer,
+      Category category) {
+    this.questionId = questionId;
+    this.questionText = questionText;
+
+
+    //adding answer to answer list
+    answerList.add(new Answer(0, answer1));
+    answerList.add(new Answer(1, answer2));
+    answerList.add(new Answer(2, answer3));
+    answerList.add(new Answer(3, answer4));
+
+    //setting correct answer
+    for (Answer a : answerList) {
+      if (a.getAId() == Integer.parseInt(correctAnswer)) {
+        a.setCorrect(true);
+        break;
+      }
+    }
+    this.category = category;
+
+    //add question to the category
+    this.category.addQuestion(this);
+
+  }
 
   @Override
   public boolean equals(Object o) {
@@ -32,61 +80,33 @@ public class Question {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Question question1 = (Question) o;
-    return questionID == question1.questionID && Objects.equals(question,
-        question1.question) && Objects.equals(answers, question1.answers)
-        && Objects.equals(category, question1.category);
+    Question question = (Question) o;
+    return questionId == question.questionId;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(questionID);
+    return Objects.hash(questionId);
   }
 
-  public String getQuestion() {
-    return question;
+  //getter + setter
+  public long getQId() {
+    return questionId;
   }
 
-  public Question() {
-
+  public void setQId(long qid) {
+    this.questionId = qid;
   }
 
-  /**
-   * Constructor of class Question.
-   *
-   * @param line     line of the question in csv File
-   * @param category The Category of the question
-   */
 
-  public Question(String[] line, Category category) {
-    this.question = line[1];
-    this.questionID = Integer.parseInt(line[0]);
-    this.category = category;
-    for (int i = 2; i < 6; i++) {
-      this.answers.add(new Answer(line[i], Integer.parseInt(line[6]) == i - 1));
-    }
-
+  public String getQuestionText() {
+    return questionText;
   }
 
-  public void setQuestion(String question) {
-    this.question = question;
+  public void setQuestionText(String questionText) {
+    this.questionText = questionText;
   }
 
-  public int getQuestionID() {
-    return questionID;
-  }
-
-  public void setQuestionID(int questionID) {
-    this.questionID = questionID;
-  }
-
-  public ArrayList<Answer> getAnswers() {
-    return answers;
-  }
-
-  public void setAnswers(ArrayList<Answer> answers) {
-    this.answers = answers;
-  }
 
   public Category getCategory() {
     return category;
@@ -95,4 +115,13 @@ public class Question {
   public void setCategory(Category category) {
     this.category = category;
   }
+
+  public List<Answer> getAnswerList() {
+    return answerList;
+  }
+
+  public void setAnswerList(List<Answer> antwortList) {
+    this.answerList = antwortList;
+  }
+
 }
