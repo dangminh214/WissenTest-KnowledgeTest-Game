@@ -26,6 +26,6 @@ public class Main {
     controller.persistData();
 
     //TODO(stud): uncomment for lab03, lab04 and lab05
-    //controller.startMenu();
+    controller.startMenu();
   }
 }
