@@ -77,19 +77,25 @@ public class Lab03GameImpl extends Lab03Game {
   @Override
   public List<Question> getQuestions(List<?> categories, int amountOfQuestionsForCategory) {
     List<Question> questions = new ArrayList<>();
-    List<Category> categoryList = (List<Category>) categories;
+    // Use proper generic type for categories list
 
-    for (Category category : categoryList) {
-      List<Question> questionList = em.createQuery("SELECT q FROM Question q WHERE"
-              + " q.category.categoryId = :category", Question.class)
-          .setParameter("category", category.getCategoryId())
-          .setMaxResults(amountOfQuestionsForCategory)
-          .getResultList();
-      questions.addAll(questionList);
+    for (Object obj : categories) {
+      if (obj instanceof Category) {
+        Category category = (Category) obj;
+        List<Question> questionList = em.createQuery(
+            "SELECT q FROM Question q WHERE q.category.categoryId = :category", Question.class)
+            .setParameter("category", category.getCategoryId())
+            .setMaxResults(amountOfQuestionsForCategory)
+            .getResultList();
+        questions.addAll(questionList);
+      } else {
+        throw new IllegalArgumentException("Invalid type in categories list");
+      }
     }
 
     return questions;
   }
+
 
   @Override
   public List<Question> interactiveGetQuestions() {
@@ -168,8 +174,24 @@ public class Lab03GameImpl extends Lab03Game {
 
   @Override
   public Game createGame(Object player, List<?> questions) {
-    return new Game((Player) player, (List<Question>) questions);
+    // Ensure player is of type Player
+    Player castPlayer = (Player) player;
+
+    // Assuming questions are actually a list of questions, cast safely
+    List<Question> castQuestions = new ArrayList<>();
+    for (Object obj : questions) {
+      if (obj instanceof Question) {
+        castQuestions.add((Question) obj);
+      } else {
+        // Handle the case where questions list contains unexpected types
+        throw new IllegalArgumentException("Invalid type in questions list");
+      }
+    }
+
+    // Now create the Game object using the properly typed variables
+    return new Game(castPlayer, castQuestions);
   }
+
 
   @Override
   public void playGame(Object game) {
