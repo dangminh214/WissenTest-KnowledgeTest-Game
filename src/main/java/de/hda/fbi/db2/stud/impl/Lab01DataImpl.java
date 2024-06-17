@@ -49,14 +49,14 @@ public class Lab01DataImpl extends Lab01Data {
       categoryCounter++;
       categoryList.add(newCategory);
       categoryCheck.put(categoryName,newCategory);
-      System.out.println("added a new Category " + categoryName);
+      //System.out.println("added a new Category " + categoryName);
     } else {
       if (findCategory(categoryName) == null) {
         Category newCategory = new Category(categoryName, categoryCounter);
         categoryCounter++;
         categoryList.add(newCategory);
         categoryCheck.put(categoryName,newCategory);
-        System.out.println("added a new Category " + categoryName);
+        //System.out.println("added a new Category " + categoryName);
       }
     }
   }
@@ -103,17 +103,17 @@ public class Lab01DataImpl extends Lab01Data {
     System.out.println("\n\nPrinting Question\n\n");
     for (Question q : questionList) {
       int loesung = -1;
-      System.out.println("Question ID: " + q.getQId());
-      System.out.println("Question: " + q.getQuestionText());
+      //System.out.println("Question ID: " + q.getQId());
+      //System.out.println("Question: " + q.getQuestionText());
       for (Answer a : q.getAnswerList()) {
-        System.out.println("Answer ID: " + a.getAId());
-        System.out.println("Answer: " + a.getAnswerText());
+        //System.out.println("Answer ID: " + a.getAId());
+        //System.out.println("Answer: " + a.getAnswerText());
         if (a.isCorrect()) {
           loesung = a.getAId();
         }
       }
-      System.out.println("Loesung: " + loesung);
-      System.out.println("Category: " + q.getCategory().getName());
+      //System.out.println("Loesung: " + loesung);
+      //System.out.println("Category: " + q.getCategory().getName());
     }
     System.out.println("Menge der Fragen: " + questionList.size());
     System.out.println("Menge der Kategorien: " + categoryList.size());

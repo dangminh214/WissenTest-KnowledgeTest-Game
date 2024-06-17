@@ -26,7 +26,6 @@ public class Lab03GameImpl extends Lab03Game {
   @Override
   public void init() {
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("fbi-postgresPU");
-    //EntityManagerFactory emf = Persistence.createEntityManagerFactory("docker-local-postgresPU");
     em = emf.createEntityManager();
   }
 
