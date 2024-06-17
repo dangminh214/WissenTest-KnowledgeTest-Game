@@ -59,5 +59,6 @@ public abstract class Lab04MassData {
   }
 
   public abstract void createMassData();
+
   public abstract void analyzeData();
 }

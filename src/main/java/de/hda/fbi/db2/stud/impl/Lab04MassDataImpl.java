@@ -2,10 +2,10 @@ package de.hda.fbi.db2.stud.impl;
 
 import de.hda.fbi.db2.api.Lab04MassData;
 import de.hda.fbi.db2.stud.entity.Category;
-import de.hda.fbi.db2.stud.entity.Question;
 import de.hda.fbi.db2.stud.entity.Game;
-import de.hda.fbi.db2.stud.entity.Player;
 import de.hda.fbi.db2.stud.entity.GameAnswer;
+import de.hda.fbi.db2.stud.entity.Player;
+import de.hda.fbi.db2.stud.entity.Question;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -16,7 +16,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.persistence.*;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 
 public class Lab04MassDataImpl extends Lab04MassData {
