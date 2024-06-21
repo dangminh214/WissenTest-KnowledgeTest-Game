@@ -17,6 +17,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -45,6 +46,7 @@ public class Lab04MassDataImpl extends Lab04MassData {
 
   @Override
   public void createMassData() {
+    long startTime = System.currentTimeMillis();
     categoriesBase = em.createNamedQuery("Category.findAll", Category.class).getResultList();
 
     // Fetch all questions
@@ -90,7 +92,8 @@ public class Lab04MassDataImpl extends Lab04MassData {
           }
 
           threadEm.getTransaction().commit();
-
+          //threadEm.flush();
+          //threadEm.clear();
 
           double progress = (double) playerId / totalPlayers * 100;
           System.out.printf("Progress: %.2f%% (%d/%d players processed)"
@@ -112,6 +115,11 @@ public class Lab04MassDataImpl extends Lab04MassData {
     Query query = em.createQuery("SELECT count(p) FROM Player p");
     Long playerCount = (Long) query.getSingleResult();
     System.out.printf("Overall Players: %d\n", playerCount);
+
+    // Stop the timer and calculate the duration
+    long endTime = System.currentTimeMillis();
+    long duration = endTime - startTime;
+    System.out.printf("Execution time: %d milliseconds%n", duration);
   }
 
   private Date getRandomDate() {
