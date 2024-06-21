@@ -90,7 +90,10 @@ public class Lab04MassDataImpl extends Lab04MassData {
     }
 
     threadPool.shutdown();
-    while (!threadPool.isTerminated()) {
+    while (true) {
+      if (threadPool.isTerminated()) {
+        break;
+      }
       // wait for all threads to finish
     }
     Query query = em.createQuery("SELECT count(p) FROM Player p");
@@ -100,7 +103,7 @@ public class Lab04MassDataImpl extends Lab04MassData {
     // Stop the timer and calculate the duration
     long endTime = System.currentTimeMillis();
     long duration = endTime - startTime;
-    System.out.printf("Execution time: %d milliseconds%n", duration);
+    System.out.printf("Execution time to create mass data: %d milliseconds%n", duration);
   }
 
   private List<Question> getRandomQuestions(Category category) {
