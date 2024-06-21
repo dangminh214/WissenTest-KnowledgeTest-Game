@@ -20,8 +20,8 @@ public class Lab03GameImpl extends Lab03Game {
 
   Player player;
   private EntityManager em;
-  private Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
-  private Random random = new Random();
+  private final Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
+  private final Random random = new Random();
 
   @Override
   public void init() {
@@ -71,7 +71,6 @@ public class Lab03GameImpl extends Lab03Game {
       System.err.println("Error while trying to persist questions.");
     }
   }
-
 
   @Override
   public List<Question> getQuestions(List<?> categories, int amountOfQuestionsForCategory) {

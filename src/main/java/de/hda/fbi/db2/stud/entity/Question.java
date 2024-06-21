@@ -123,5 +123,4 @@ public class Question {
   public void setAnswerList(List<Answer> antwortList) {
     this.answerList = antwortList;
   }
-
 }

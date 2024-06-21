@@ -1,7 +1,6 @@
 package de.hda.fbi.db2.stud.impl;
 
 import de.hda.fbi.db2.api.Lab01Data;
-import de.hda.fbi.db2.stud.entity.Answer;
 import de.hda.fbi.db2.stud.entity.Category;
 import de.hda.fbi.db2.stud.entity.Question;
 import java.util.ArrayList;
@@ -56,7 +55,6 @@ public class Lab01DataImpl extends Lab01Data {
         categoryCounter++;
         categoryList.add(newCategory);
         categoryCheck.put(categoryName,newCategory);
-        //System.out.println("added a new Category " + categoryName);
       }
     }
   }
@@ -100,22 +98,7 @@ public class Lab01DataImpl extends Lab01Data {
 
   @Override
   public void printData() {
-    System.out.println("\n\nPrinting Question\n\n");
-    for (Question q : questionList) {
-      int loesung = -1;
-      //System.out.println("Question ID: " + q.getQId());
-      //System.out.println("Question: " + q.getQuestionText());
-      for (Answer a : q.getAnswerList()) {
-        //System.out.println("Answer ID: " + a.getAId());
-        //System.out.println("Answer: " + a.getAnswerText());
-        if (a.isCorrect()) {
-          loesung = a.getAId();
-        }
-      }
-      //System.out.println("Loesung: " + loesung);
-      //System.out.println("Category: " + q.getCategory().getName());
-    }
-    System.out.println("Menge der Fragen: " + questionList.size());
-    System.out.println("Menge der Kategorien: " + categoryList.size());
+    System.out.println("Number of questions: " + questionList.size());
+    System.out.println("Number of Categories: " + categoryList.size());
   }
 }
