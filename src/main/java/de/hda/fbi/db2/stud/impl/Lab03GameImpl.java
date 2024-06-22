@@ -17,18 +17,29 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 public class Lab03GameImpl extends Lab03Game {
-
   Player player;
-  private EntityManager em;
+
   private final Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
   private final Random random = new Random();
 
-  @Override
-  public void init() {
-    EntityManagerFactory emf = Persistence.createEntityManagerFactory("fbi-postgresPU");
-    em = emf.createEntityManager();
-  }
-
+  static EntityManagerFactory emf = Persistence.createEntityManagerFactory("fbi-postgresPU");
+  private static final EntityManager em =  emf.createEntityManager();
+  /**
+   * Creates a new Player or retrieves it from the database.
+   * <p>
+   * This function shall try to retrieve the player with the given name playerName from the
+   * database. If no such player exists, it shall be created as a Java Object. It is not necessary
+   * to persist the Player yet.
+   * </p>
+   *
+   * <p>This function is primarily used for testing. There exists a version with user interaction
+   * which shall be used from the menu.
+   * </p>
+   *
+   * @param playerName The name for the new Player.
+   * @return Player object which was created or retrieved.
+   * @see Lab03Game#interactiveGetOrCreatePlayer()
+   */
   @Override
   public Object getOrCreatePlayer(String playerName) {
     List<Player> playerList = new ArrayList<>();
@@ -50,51 +61,86 @@ public class Lab03GameImpl extends Lab03Game {
     }
   }
 
+  /**
+   * Creates a new Player or retrieves it from the database (interactive version).
+   *
+   * <p>
+   * This function shall ask the user for a player name, and then shall try to retrieve such a
+   * player from the database. If no such player exists, it shall be created as a Java Object. It is
+   * not necessary to persist the player yet.
+   * </p>
+   *
+   * <p>This function is primarily used for user interaction. There exists a version used for
+   * testing, {@link #getOrCreatePlayer(String)}.</p>
+   *
+   * @return Player object which was created or retrieved.
+   * @see Lab03Game#getOrCreatePlayer(String)
+   */
   @Override
   public Object interactiveGetOrCreatePlayer() {
     System.out.print("Enter player name: ");
     String playerName = scanner.nextLine();
-    return (Object) getOrCreatePlayer(playerName);
+    return getOrCreatePlayer(playerName);
   }
 
+  /**
+   * This function shall generate a random list of questions which are from the given categories.
+   *
+   * <p>Per category there shall be a certain amount of questions chosen. If a category hosts less
+   * questions than that amount, then all of the questions shall be chosen. Questions shall be
+   * randomly selected.
+   * </p>
+   *
+   * <p>There is also an interactive version of this function which asks the user for categories
+   * instead of randomly selecting them.</p>
+   *
+   * @param categories                   A list of categories to select questions from
+   * @param amountOfQuestionsForCategory The amount of questions per category. If a category has
+   *                                     less than this amount, then all questions of that category
+   *                                     shall be selected.
+   * @return A List of randomly chosen Questions from the given Categories.
+   * @see Lab03Game#interactiveGetQuestions()
+   */
   @Override
-  public void persistGame(Object game) {
-    try {
-      em.getTransaction().begin();
-      em.persist(player);
-      em.persist(game);
-      em.getTransaction().commit();
-    } catch (Exception e) {
-      if (em.getTransaction().isActive()) {
-        em.getTransaction().rollback();
-      }
-      System.err.println("Error while trying to persist questions.");
+  public List<?> getQuestions(List<?> categories, int amountOfQuestionsForCategory) {
+    if (em == null) {
+      throw new IllegalStateException("EntityManager is not initialized.");
     }
-  }
-
-  @Override
-  public List<Question> getQuestions(List<?> categories, int amountOfQuestionsForCategory) {
     List<Question> questions = new ArrayList<>();
-    // Use proper generic type for categories list
+    List<Category> categoryList = new ArrayList<>();
 
     for (Object obj : categories) {
       if (obj instanceof Category) {
-        Category category = (Category) obj;
-        List<Question> questionList = em.createQuery(
-            "SELECT q FROM Question q WHERE q.category.categoryId = :category", Question.class)
-            .setParameter("category", category.getCategoryId())
-            .setMaxResults(amountOfQuestionsForCategory)
-            .getResultList();
-        questions.addAll(questionList);
+        categoryList.add((Category) obj);
       } else {
-        throw new IllegalArgumentException("Invalid type in categories list");
+        throw new ClassCastException("The list contains an element that is not of type Category");
       }
+    }
+
+    for (Category category : categoryList) {
+      List<Question> questionList = em.createQuery(
+          "SELECT q FROM Question q WHERE"
+              + " q.category.categoryId = :categoryId", Question.class)
+          .setParameter("categoryId", category.getCategoryId())
+          .setMaxResults(amountOfQuestionsForCategory)
+          .getResultList();
+      questions.addAll(questionList);
     }
 
     return questions;
   }
 
-
+  /**
+   * This function shall generate a random list of questions after asking the user for categories.
+   *
+   * <p>In this function, ask the user for categories and the number of questions per category.
+   * Then, randomly select questions from those categories. Choose as many questions per category as
+   * were entered, as long as the category has that many questions. If there are fewer questions,
+   * then select all of them.</p>
+   *
+   * @return A List of randomly chosen Questions from categories which the user entered.
+   * @see Lab03Game#getQuestions(List, int)
+   */
   @Override
   public List<Question> interactiveGetQuestions() {
     List<Question> questions = new ArrayList<>();
@@ -151,6 +197,7 @@ public class Lab03GameImpl extends Lab03Game {
       }
     }
 
+
     for (int categoryId : categoryIds) {
       // Retrieve questions
       List<Question> questionList =
@@ -166,31 +213,43 @@ public class Lab03GameImpl extends Lab03Game {
       List<Question> catQuestions = questionList.subList(0, endIndex);
       questions.addAll(catQuestions);
     }
-
     return questions;
   }
 
+  /**
+   * This function creates a Game Object with the given player and questions, but without playing
+   * the game yet.
+   *
+   * <p>It is important that you neither play the game yet nor persist the game! This is just meant
+   * to create the game object.</p>
+   *
+   * @param player    The Player which shall play the game.
+   * @param questions The Questions which shall be asked during the game.
+   * @return A Game object which contains an unplayed game for the given player with the given
+   *         questions.
+   */
   @Override
-  public Game createGame(Object player, List<?> questions) {
-    // Ensure player is of type Player
-    Player castPlayer = (Player) player;
-
-    // Assuming questions are actually a list of questions, cast safely
-    List<Question> castQuestions = new ArrayList<>();
+  public Object createGame(Object player, List<?> questions) {
+    List<Question> questionList = new ArrayList<>();
     for (Object obj : questions) {
       if (obj instanceof Question) {
-        castQuestions.add((Question) obj);
+        questionList.add((Question) obj);
       } else {
-        // Handle the case where questions list contains unexpected types
-        throw new IllegalArgumentException("Invalid type in questions list");
+        throw new ClassCastException("The list contains an element that is not of type Question");
       }
     }
-
-    // Now create the Game object using the properly typed variables
-    return new Game(castPlayer, castQuestions);
+    return new Game((Player) player, questionList);
   }
 
-
+  /**
+   * This function simulates a game play without user interaction by randomly choosing answers.
+   *
+   * <p>There is also an interactive version of this function which shall be called from the menu.
+   * </p>
+   *
+   * @param game The Game object which shall be played.
+   * @see Lab03Game#interactivePlayGame(Object)
+   */
   @Override
   public void playGame(Object game) {
     Game g = (Game) game;
@@ -202,10 +261,18 @@ public class Lab03GameImpl extends Lab03Game {
       int answerIndex = random.nextInt(question.getAnswerList().size());
       g.addAnswer(question, answerIndex);
     }
-
     g.setEndTime(new Date());
   }
 
+  /**
+   * This function plays the given game with the user, that is by using user interaction.
+   *
+   * <p>This is the function that should be called from the menu. Here you can implement the
+   * necessary user interaction for the playing of the game.</p>
+   *
+   * @param game The Game object which shall be played.
+   * @see Lab03Game#playGame(Object)
+   */
   @Override
   public void interactivePlayGame(Object game) {
     Game g = (Game) game;
@@ -252,5 +319,27 @@ public class Lab03GameImpl extends Lab03Game {
     System.out.println("Game Finished!");
     System.out.println("Correct Answers: " + correctAnswers);
     System.out.println("Wrong Answers: " + wrongAnswers);
+    System.out.println("Start Time: " + g.getStartTime());
+    System.out.println("End Time: " + g.getEndTime());
+  }
+
+  /**
+   * Persists a played game, including the player who played it.
+   *
+   * @param game The Game object to be persisted.
+   */
+  @Override
+  public void persistGame(Object game) {
+    try {
+      em.getTransaction().begin();
+      em.persist(player);
+      em.persist(game);
+      em.getTransaction().commit();
+    } catch (Exception e) {
+      if (em.getTransaction().isActive()) {
+        em.getTransaction().rollback();
+      }
+      System.err.println("Error while trying to persist questions.");
+    }
   }
 }

@@ -13,7 +13,6 @@ public class Lab02EntityManagerImpl extends Lab02EntityManager {
   @Override
   public void init() {
     emf = Persistence.createEntityManagerFactory("fbi-postgresPU");
-    //    emf = Persistence.createEntityManagerFactory("docker-local-postgresPU");
   }
 
   @Override
