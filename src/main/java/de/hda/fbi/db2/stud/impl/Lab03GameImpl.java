@@ -24,6 +24,7 @@ public class Lab03GameImpl extends Lab03Game {
 
   static EntityManagerFactory emf = Persistence.createEntityManagerFactory("fbi-postgresPU");
   private static final EntityManager em =  emf.createEntityManager();
+
   /**
    * Creates a new Player or retrieves it from the database.
    * <p>
