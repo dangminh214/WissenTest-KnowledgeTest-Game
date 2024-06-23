@@ -102,8 +102,8 @@ public class Game {
   }
 
   /**
-   * Adds an answer to the answer list based on the index of the selected answer of the given
-   * question.
+   * Adds an answer to the answer list based on the index of the selected answer
+   * of the given question.
    *
    * @param question    The question to which the answer is being added.
    * @param answerIndex The index of the selected answer in the question's answer list.
@@ -116,3 +116,4 @@ public class Game {
     this.answerList.add(answer);
   }
 }
+

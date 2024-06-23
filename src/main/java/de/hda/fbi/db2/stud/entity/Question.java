@@ -6,9 +6,7 @@ import java.util.Objects;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
 
 @Entity
 public class Question {
@@ -25,7 +23,6 @@ public class Question {
 
 
   @ManyToOne
-  @JoinColumn(name = "category_id")
   private Category category;
 
   public Question() {}

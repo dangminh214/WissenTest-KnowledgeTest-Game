@@ -1,3 +1,4 @@
+
 package de.hda.fbi.db2.stud.entity;
 
 import javax.persistence.Embeddable;
@@ -50,6 +51,4 @@ public class Answer {
   public void setAnswerText(String answer) {
     this.answerText = answer;
   }
-
-
 }

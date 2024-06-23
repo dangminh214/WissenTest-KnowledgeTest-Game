@@ -22,6 +22,7 @@ public class GameAnswer {
     isCorrect = correct;
   }
 
+
   public long getQuestionId() {
     return questionId;
   }
