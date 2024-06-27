@@ -279,4 +279,8 @@ public class Controller {
 
     lab04MassData.createMassData();
   }
+
+  public void analyzeData() {
+    lab04MassData.analyzeData();
+  }
 }

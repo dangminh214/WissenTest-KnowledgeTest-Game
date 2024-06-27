@@ -68,7 +68,7 @@ public class MenuController {
   }
 
   private void analyzeData() {
-
+    controller.analyzeData();
   }
 
   private void createMassData() {
