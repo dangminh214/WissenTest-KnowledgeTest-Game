@@ -136,7 +136,7 @@ public class Lab04MassDataImpl extends Lab04MassData {
       System.out.println("1: print detail for player");
       System.out.println("2: print player and game count");
       System.out.println("3: print popular category");
-      System.out.println("0: Quit");
+      System.out.println("0: Quit Game Analyze");
     } while (readInput());
   }
 
