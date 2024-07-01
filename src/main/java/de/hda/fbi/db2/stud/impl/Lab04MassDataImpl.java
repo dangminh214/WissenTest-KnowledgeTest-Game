@@ -251,9 +251,7 @@ public class Lab04MassDataImpl extends Lab04MassData {
 
       TypedQuery<Object[]> query = em.createQuery(jpql, Object[].class);
 
-
       List<Object[]> results = query.getResultList();
-
 
       if (results.isEmpty()) {
         System.out.println("No player data found.");
