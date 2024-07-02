@@ -9,10 +9,12 @@ import de.hda.fbi.db2.stud.entity.Question;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.persistence.EntityManager;
@@ -28,6 +30,7 @@ public class Lab04MassDataImpl extends Lab04MassData {
   private List<Category> categoriesBase;
   private List<Question> allQuestions;
   private static final int THREADS = 50; // Number of threads to use
+  private final Scanner scanner = new Scanner(System.in);
 
   @Override
   public void init() {
@@ -36,7 +39,6 @@ public class Lab04MassDataImpl extends Lab04MassData {
     allQuestions = new ArrayList<>();
     random = new Random();
   }
-
 
   @Override
   public void createMassData() {
@@ -141,7 +143,6 @@ public class Lab04MassDataImpl extends Lab04MassData {
     } while (readInput());
   }
 
-
   /**
    * this function use to read the input of user.
    * @return true
@@ -158,15 +159,15 @@ public class Lab04MassDataImpl extends Lab04MassData {
         case "0":
           return false;
         case "1":
-          System.out.println("Not implemented yet");
-          System.out.println("Here show all Players Id, name");
+          promptAndDisplayPlayerDetails();
+          break;
         case "2":
           System.out.println("Enter Player Name:");
           String playerNameInput = reader.readLine();
           try {
             printGameDetailsForPlayer(playerNameInput);
           } catch (NumberFormatException e) {
-            System.out.println("Invalid Player ID. Please enter a numeric value.");
+            System.out.println("Invalid Player Name. Please enter a valid name for player.");
           }
           break;
         case "3":
@@ -184,6 +185,65 @@ public class Lab04MassDataImpl extends Lab04MassData {
     } catch (Exception e) {
       e.printStackTrace();
       return false;
+    }
+  }
+
+  /**
+   * Prompts the user to enter the start date and end date.
+   */
+  public void promptAndDisplayPlayerDetails() {
+    try {
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+      System.out.print("Enter start date (yyyy-MM-dd): ");
+      Date startDate = dateFormat.parse(scanner.nextLine());
+      System.out.print("Enter end date (yyyy-MM-dd): ");
+      Date endDate = dateFormat.parse(scanner.nextLine());
+
+      printPlayersByTimeRange(startDate, endDate);
+    } catch (Exception e) {
+      System.out.println("Invalid date format. Please use yyyy-MM-dd.");
+    }
+  }
+
+  /**
+   * Display ID, name of players in a given time range.
+   * @param startDate the start date of the time range
+   * @param endDate the end date of the time range
+   */
+  public void printPlayersByTimeRange(Date startDate, Date endDate) {
+    EntityManager em = lab02EntityManager.getEntityManager();
+
+    try {
+      // creating the JPQL query
+      TypedQuery<String> query = em.createQuery(
+          "SELECT DISTINCT p.name FROM Player p JOIN Game g "
+              + "ON p.playerId = g.player.playerId "
+              + "WHERE g.startTime "
+              + "BETWEEN :startDate AND :endDate",
+          String.class);
+
+      // setting parameters
+      query.setParameter("startDate", startDate);
+      query.setParameter("endDate", endDate);
+
+      // executing the query
+      List<String> playerNames = query.getResultList();
+
+      // printing the result
+      if (playerNames.isEmpty()) {
+        System.out.println("No players found in the specified time range.");
+      } else {
+        System.out.println("Players who played in the specified time range:");
+        for (String playerName : playerNames) {
+          System.out.println(playerName);
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      if (em != null && em.isOpen()) {
+        em.close();
+      }
     }
   }
 
@@ -221,7 +281,7 @@ public class Lab04MassDataImpl extends Lab04MassData {
           GameAnswer answer = (GameAnswer) result[2]; // Assuming GameAnswer is a defined class
           System.out.println("Game ID: " + gameId
               + ", Start Time: " + startTime
-              + ", Question: " + answer.getQuestionId()
+              + ", QuestionID: " + answer.getQuestionId()
               + ", Answer : " + answer.getAnswerId());
           if (answer.isCorrect()) {
             countIsCorrect++;
