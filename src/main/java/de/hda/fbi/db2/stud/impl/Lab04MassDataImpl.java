@@ -133,9 +133,10 @@ public class Lab04MassDataImpl extends Lab04MassData {
     do {
       System.out.println("Analyze the game");
       System.out.println("--------------------------------------");
-      System.out.println("1: print detail for player");
-      System.out.println("2: print player and game count");
-      System.out.println("3: print popular category");
+      System.out.println("1: print all players in a selection date");
+      System.out.println("2: print detail for player");
+      System.out.println("3: print all players and game count");
+      System.out.println("4: print popular category");
       System.out.println("0: Quit Game Analyze");
     } while (readInput());
   }
@@ -157,6 +158,9 @@ public class Lab04MassDataImpl extends Lab04MassData {
         case "0":
           return false;
         case "1":
+          System.out.println("Not implemented yet");
+          System.out.println("Here show all Players Id, name");
+        case "2":
           System.out.println("Enter Player Name:");
           String playerNameInput = reader.readLine();
           try {
@@ -165,10 +169,10 @@ public class Lab04MassDataImpl extends Lab04MassData {
             System.out.println("Invalid Player ID. Please enter a numeric value.");
           }
           break;
-        case "2":
+        case "3":
           printPlayersAndGameCounts();
           break;
-        case "3":
+        case "4":
           printCategoryPopularity();
           break;
         default:
