@@ -13,6 +13,10 @@ Hier finden Sie nun eine fachliche Projektbeschreibung des zu Implementierenden 
 
 # Fachliche Projektbeschreibung
 
+## Anmerkung
+
+Meine Lösung für dieses Projekt lauft an der lokalen Datenbank
+
 ## Projektidee
 
 Ziel des Projekts ist die Entwicklung des Spiels „Wissenstest“, mit dem man sein Wissen in verschiedenen Wissensgebieten (Kategorien) testen kann.
